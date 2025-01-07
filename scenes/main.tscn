@@ -14,7 +14,7 @@ centered = false
 
 [node name="PlaceBuildingButton" type="Button" parent="."]
 offset_left = 10.0
-offset_top = 610.0
+offset_top = 670.0
 offset_right = 127.0
-offset_bottom = 641.0
+offset_bottom = 701.0
 text = "Place Building"
