@@ -5,35 +5,45 @@ namespace Game;
 
 public partial class Main : Node2D
 {
-	private Sprite2D sprite;
+	private Sprite2D cursor;
 	private PackedScene buildingScene;
+	private Button placeBuildingButton;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
 		buildingScene = GD.Load<PackedScene>("res://scenes/building/Building.tscn");
-		sprite = GetNode<Sprite2D>("Cursor");
+		cursor = GetNode<Sprite2D>("Cursor");
+		placeBuildingButton = GetNode<Button>("PlaceBuildingButton");
+
+		cursor.Visible = false;
+
+		placeBuildingButton.Pressed += OnButtonPressed;
+
+		// Below is the alternate way of connecting signals in C#. 
+		// placeBuildingButton.Connect(Button.SignalName.Pressed, Callable.From(OnButtonPressed));
 	}
 
-    public override void _UnhandledInput(InputEvent evt)
-    {
-        if (evt.IsActionPressed("left_click"))
+	public override void _UnhandledInput(InputEvent evt)
+	{
+		if (cursor.Visible && evt.IsActionPressed("left_click"))
 		{
 			PlaceBuildingAtMousePosition();
+			cursor.Visible = false;
 		}
-    }
+	}
 
-    // Called every frame. 'delta' is the elapsed time since the previous frame.
-    public override void _Process(double delta)
-	{	
+	// Called every frame. 'delta' is the elapsed time since the previous frame.
+	public override void _Process(double delta)
+	{
 		Vector2 gridPosition = GetMouseGridCellPosition();
 		// Update sprite cursor to snap to grid.
-		sprite.GlobalPosition = gridPosition * 64;
+		cursor.GlobalPosition = gridPosition * 64;
 	}
 
 	private Vector2 GetMouseGridCellPosition()
 	{
-				// Get grid coordinates.
+		// Get grid coordinates.
 		Vector2 mousePosition = GetGlobalMousePosition();
 		Vector2 gridPosition = mousePosition / 64;
 		gridPosition = gridPosition.Floor();
@@ -48,4 +58,10 @@ public partial class Main : Node2D
 		Vector2 gridPosition = GetMouseGridCellPosition();
 		building.GlobalPosition = gridPosition * 64;
 	}
+
+	private void OnButtonPressed()
+	{
+		cursor.Visible = true;
+	}
+
 }
