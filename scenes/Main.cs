@@ -10,7 +10,7 @@ public partial class Main : Node
 	private PackedScene buildingScene;
 	private Button placeBuildingButton;
 
-	private Vector2? hoveredGridCell;
+	private Vector2I? hoveredGridCell;
 
 	public override void _Ready()
 	{
@@ -38,7 +38,7 @@ public partial class Main : Node
 
 	public override void _Process(double delta)
 	{
-		Vector2 gridPosition = gridManager.GetMouseGridCellPosition();
+		Vector2I gridPosition = gridManager.GetMouseGridCellPosition();
 		// Update sprite cursor to snap to grid.
 		cursor.GlobalPosition = gridPosition * 64;
 
