@@ -1,5 +1,7 @@
+using Game.Component;
 using Godot;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Game.Manager;
 
@@ -27,18 +29,14 @@ public partial class GridManager : Node
 		occupiedCells.Add(tilePosition);
 	}
 
-	public void HighlightValidTilesInRadius(Vector2I rootCell, int radius)
+	public void HighlightBuildableTiles()
 	{
 		ClearHighlightedTiles();
 
-		for (var x = rootCell.X - radius; x <= rootCell.X + radius; x++)
+		var buildingComponents = GetTree().GetNodesInGroup(nameof(BuildingComponent)).Cast<BuildingComponent>();
+		foreach (var buildingComponent in buildingComponents)
 		{
-			for (var y = rootCell.Y - radius; y <= rootCell.Y + radius; y++)
-			{
-				var tilePosition = new Vector2I(x, y);
-				if (!IsTilePositionValid(tilePosition)) continue;
-				highlightTilemapLayer.SetCell(tilePosition, 0, Vector2I.Zero);
-			}
+			HighlightValidTilesInRadius(buildingComponent.GetGridCellPosition(), buildingComponent.BuildableRadius);
 		}
 	}
 
@@ -56,4 +54,19 @@ public partial class GridManager : Node
 		// This cast may become a problem in the future.
 		return (Vector2I)gridPosition;
 	}
+
+	private void HighlightValidTilesInRadius(Vector2I rootCell, int radius)
+	{
+
+		for (var x = rootCell.X - radius; x <= rootCell.X + radius; x++)
+		{
+			for (var y = rootCell.Y - radius; y <= rootCell.Y + radius; y++)
+			{
+				var tilePosition = new Vector2I(x, y);
+				if (!IsTilePositionValid(tilePosition)) continue;
+				highlightTilemapLayer.SetCell(tilePosition, 0, Vector2I.Zero);
+			}
+		}
+	}
+
 }
