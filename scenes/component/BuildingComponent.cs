@@ -14,8 +14,8 @@ public partial class BuildingComponent : Node2D
 		// This is an insanely smart way to not have to deal with group name strings by just handling groups with code.
 		AddToGroup(nameof(BuildingComponent));
 
-		// Signal
-		GameEvents.EmitBuildingPlaced(this);
+		// Deferred Signal
+		Callable.From(() => GameEvents.EmitBuildingPlaced(this)).CallDeferred();
 	}
 
 	public Vector2I GetGridCellPosition()
